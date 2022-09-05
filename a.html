@@ -1,0 +1,58 @@
+
+<style>
+#log {display:block; font-size: 100px}
+</style>
+
+<body>
+<div id='log'></div>
+<a href='https://www.example.com'>example.com</a>
+<div id="parentid"></div>
+
+<script>
+	// just for debug
+	window.addEventListener('pageshow', (event) => {
+			console.log('pageshow event, now:', Date.now(), event)
+	})
+
+	// for disable bfcache
+	window.addEventListener('unload', function () {});
+
+	var r = Math.random();
+	var seq;
+	if (r < 0.3) {
+		seq = 1;
+	} else {
+		seq = 2;
+	}
+
+	window.addEventListener('load', function () {
+		document.getElementById('log').innerHTML = seq;
+	});
+
+	if (seq === 1) {
+		const im = '<iframe style="display:none" width="0" height="0" src="https://example.com"></iframe>';
+		document.body.insertAdjacentHTML('beforeend', im);
+	} else {
+		const iframe = document.createElement('iframe');
+        iframe.id = "parentid_ad_frame";
+        iframe.style = "border:none;clear:both;margin:auto;overflow:hidden;";
+        iframe.width = "350";
+        iframe.height = "350";
+        iframe.scrolling = "no";
+        iframe.title = "Content";
+        iframe.setAttribute("allowtransparency", "true");
+        iframe.allow = "fullscreen";
+        iframe.allowFullscreen = "true";
+        iframe.frameBorder = "0";
+		iframe.setAttribute('srcdoc', 'THIS SOULD BE DISPLAYED!');
+        document.getElementById('parentid').appendChild(iframe);
+
+		console.log('1', iframe.contentDocument)
+
+		setTimeout(function(){
+			console.log('2', iframe.contentDocument)
+		}, 1000);
+	}
+</script>
+
+</body>
